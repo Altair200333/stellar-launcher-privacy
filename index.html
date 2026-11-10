@@ -1,229 +1,546 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-grain="riso">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stellar Launcher — Privacy Policy · Политика конфиденциальности</title>
 <meta name="description" content="Stellar Launcher collects no personal data. Everything you create in the app stays on your phone.">
+<meta name="theme-color" content="#0c0c0d">
+<link rel="icon" href="data:,">
+<link rel="preload" href="fonts/alegreya_sans_light.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="fonts/alegreya_sans.ttf" as="font" type="font/ttf" crossorigin>
 <style>
+  /* Self-hosted Stellar Launcher fonts (res/font). No external requests. */
+  @font-face { font-family: "Alegreya Sans"; src: url("fonts/alegreya_sans_light.ttf") format("truetype"); font-weight: 300; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Alegreya Sans"; src: url("fonts/alegreya_sans.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Alegreya Sans"; src: url("fonts/alegreya_sans_medium.ttf") format("truetype"); font-weight: 500 700; font-style: normal; font-display: swap; }
+  @font-face { font-family: "PT Mono"; src: url("fonts/pt_mono.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
+
+  /* Grain palette stops (Palette.kt). Middle / Riso is the default. */
+  :root, [data-grain="riso"] {
+    --bg: #0c0c0d; --surface: #151516; --pressed: #232325; --hairline: #55565a;
+    --ink: #b4b2ad; --ink-bright: #efebe4; --highlight: #ffffff;
+    --glow: #ff9a6a; --glow-accent: #38b6ad;
+  }
+  [data-grain="studio"] {
+    --bg: #0b0c10; --surface: #14151a; --pressed: #22232a; --hairline: #545866;
+    --ink: #b0b3be; --ink-bright: #ecedf2; --glow: #ff5fa8; --glow-accent: #3a8fd8;
+  }
+  [data-grain="cinema"] {
+    --bg: #0b0908; --surface: #151210; --pressed: #25201c; --hairline: #5c544c;
+    --ink: #bcb1a3; --ink-bright: #efe6d6; --glow: #e4572e; --glow-accent: #d9a441;
+  }
   :root {
-    color-scheme: dark light;
-    --bg: #080a0f;
-    --panel: #0f131b;
-    --ink: #eef2f8;
-    --dim: #b9c2d0;
-    --faint: #7f8a9c;
-    --line: rgba(200, 214, 235, 0.16);
-    --acc: #9fd8ee;
+    color-scheme: dark;
+    --copy: var(--glow);
+    --copy: color-mix(in srgb, var(--glow) 85%, transparent);          /* RISO_COPY_ALPHA */
+    --copy-accent: var(--glow-accent);
+    --copy-accent: color-mix(in srgb, var(--glow-accent) 85%, transparent);
+    --line: 1.5px;                                                       /* RISO_LINE */
+    --shift: 3px;                                                        /* RISO_SHIFT */
+    --rule: var(--hairline);
+    --rule: color-mix(in srgb, var(--hairline) 55%, transparent);
+    --serif: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+    --mono: "PT Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
   }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #f6f7f9;
-      --panel: #ffffff;
-      --ink: #12151b;
-      --dim: #3c4452;
-      --faint: #6b7483;
-      --line: rgba(20, 30, 50, 0.14);
-      --acc: #1f6f8f;
-    }
-  }
+
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  html { background: var(--bg); transition: background-color .25s ease; scroll-behavior: smooth; }
   body {
     margin: 0;
+    position: relative;
+    min-height: 100vh;
     background: var(--bg);
     color: var(--ink);
-    font: 17px/1.62 system-ui, -apple-system, "Segoe UI", sans-serif;
+    font: 400 18px/1.6 var(--serif);
     -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
   }
-  .wrap { max-width: 760px; margin: 0 auto; padding: 0 22px 72px; }
-  header { padding: 44px 0 26px; border-bottom: 1px solid var(--line); }
-  .brand { display: flex; align-items: center; gap: 14px; }
-  .brand svg { width: 38px; height: 33px; flex: none; fill: var(--ink); }
-  .brand span { font: 600 25px/1.1 Georgia, "Times New Roman", serif; letter-spacing: 0.01em; }
-  nav { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
-  nav a {
-    padding: 7px 16px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    color: var(--acc);
-    text-decoration: none;
-    font-size: 15px;
+  /* Colour film grain: gentle, never intercepts input. */
+  body::after {
+    content: "";
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    opacity: .08;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 1'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='2' intercept='-.6'/%3E%3CfeFuncG type='linear' slope='2' intercept='-.6'/%3E%3CfeFuncB type='linear' slope='2' intercept='-.6'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
   }
-  nav a:hover, nav a:focus-visible { border-color: var(--acc); outline: none; }
-  section { padding-top: 44px; }
-  section + section { margin-top: 52px; border-top: 1px solid var(--line); }
-  h1 { margin: 0 0 6px; font: 600 38px/1.14 Georgia, "Times New Roman", serif; }
-  .meta { margin: 0 0 26px; color: var(--faint); font-size: 15px; }
-  h2 { margin: 36px 0 10px; font: 600 23px/1.25 Georgia, "Times New Roman", serif; }
-  p { margin: 0 0 14px; color: var(--dim); }
-  ul { margin: 0 0 14px; padding-left: 22px; color: var(--dim); }
-  li { margin-bottom: 7px; }
-  strong { color: var(--ink); font-weight: 600; }
+
+  a { color: var(--glow); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  a:hover { color: var(--ink-bright); }
+  :focus-visible { outline: var(--line) dashed var(--glow); outline-offset: 4px; }
+  strong { color: var(--ink-bright); font-weight: 500; }
   code {
-    padding: 1px 6px;
-    border-radius: 6px;
-    background: var(--panel);
-    border: 1px solid var(--line);
-    font: 14px/1.4 ui-monospace, "Cascadia Mono", Consolas, "Liberation Mono", monospace;
-    color: var(--ink);
+    font: 400 .8em/1.4 var(--mono);
+    color: var(--ink-bright);
+    background: var(--pressed);
+    padding: 1px 5px;
+    border-radius: 0;
     overflow-wrap: anywhere;
   }
-  a { color: var(--acc); }
-  .lead {
-    padding: 20px 22px;
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    background: var(--panel);
+
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 24px 64px; }
+
+  /* ---------- Header ---------- */
+  header { display: flex; align-items: center; justify-content: space-between; gap: 18px 24px; flex-wrap: wrap; padding: 30px 0 22px; }
+  .brand { display: flex; align-items: center; gap: 14px; color: var(--ink-bright); text-decoration: none; }
+  .emblem { position: relative; width: 40px; height: 35px; flex: none; }
+  .emblem svg { position: absolute; left: 0; top: 0; width: 37px; height: 32px; }
+  .emblem .peach { fill: var(--copy); transform: translate(3px, 2px); }
+  .emblem .teal { fill: var(--glow-accent); mix-blend-mode: screen; }
+  .brand b { font: 500 25px/1 var(--serif); letter-spacing: .005em; }
+  .brand small { display: block; margin-top: 5px; color: var(--ink); font: 400 12px/1 var(--mono); }
+
+  nav.site { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  nav.site > a { font: 400 13px/1 var(--mono); color: var(--ink); text-decoration: none; padding: 6px 0; border-bottom: 1px solid var(--hairline); }
+  nav.site > a:hover { color: var(--glow); border-color: var(--glow); }
+
+  /* grainSwitch: a square teal frame with a hairline between the cells. */
+  .switch { display: inline-flex; border: var(--line) solid var(--glow-accent); border-radius: 0; background: var(--surface); }
+  .switch button {
+    appearance: none; border: 0; border-radius: 0; margin: 0;
+    background: transparent; color: var(--ink);
+    font: 400 12px/1 var(--mono);
+    padding: 8px 12px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px;
   }
+  .switch button + button { border-left: 1px solid var(--hairline); }
+  .switch button:hover { color: var(--ink-bright); }
+  .switch button[aria-pressed="true"] { background: var(--pressed); color: var(--ink-bright); }
+  .switch i { display: inline-block; width: 12px; height: 8px; position: relative; }
+  .switch i::before, .switch i::after { content: ""; position: absolute; width: 8px; height: 8px; top: 0; }
+  .switch i::before { left: 0; background: var(--sw-a); }
+  .switch i::after { left: 4px; background: var(--sw-b); mix-blend-mode: screen; opacity: .9; }
+  .switch [data-set="studio"] i { --sw-a: #3a8fd8; --sw-b: #ff5fa8; }
+  .switch [data-set="riso"] i   { --sw-a: #38b6ad; --sw-b: #ff9a6a; }
+  .switch [data-set="cinema"] i { --sw-a: #d9a441; --sw-b: #e4572e; }
+
+  /* Two-ink registration threshold rule. */
+  .reg { position: relative; height: 6px; margin-bottom: 44px; }
+  .reg::before, .reg::after { content: ""; position: absolute; left: 0; right: 0; height: var(--line); }
+  .reg::before { top: 0; background: var(--glow-accent); }
+  .reg::after { top: 2px; left: 3px; right: -3px; background: var(--copy); mix-blend-mode: screen; }
+
+  /* ---------- Riso geometry ---------- */
+  .riso {
+    position: relative;
+    background: var(--surface);
+    border: var(--line) solid var(--glow-accent);
+    border-radius: 0;
+    box-shadow: var(--shift) var(--shift) 0 var(--copy);
+  }
+  /* Registration crop marks at the plate corners. */
+  .marks::before {
+    content: ""; position: absolute; inset: -15px; pointer-events: none;
+    --c: var(--hairline);
+    background:
+      linear-gradient(var(--c), var(--c)) 0 5px / 11px 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) 5px 0 / 1px 11px no-repeat,
+      linear-gradient(var(--c), var(--c)) 100% 5px / 11px 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) calc(100% - 5px) 0 / 1px 11px no-repeat,
+      linear-gradient(var(--c), var(--c)) 0 calc(100% - 5px) / 11px 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) 5px 100% / 1px 11px no-repeat,
+      linear-gradient(var(--c), var(--c)) 100% calc(100% - 5px) / 11px 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) calc(100% - 5px) 100% / 1px 11px no-repeat;
+  }
+
+  /* grainButton: pressed, the box drops onto where its shadow was. */
+  .btn {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 13px 16px;
+    background: var(--surface);
+    color: var(--ink-bright);
+    border: var(--line) solid var(--glow-accent);
+    border-radius: 0;
+    box-shadow: var(--shift) var(--shift) 0 var(--copy);
+    font: 500 17px/1.2 var(--serif);
+    text-decoration: none;
+    transition: background-color .12s ease;
+  }
+  .btn span { font: 400 12px/1 var(--mono); color: var(--ink); }
+  .btn:hover { background: var(--pressed); color: var(--ink-bright); }
+  .btn:active { transform: translate(var(--shift), var(--shift)); box-shadow: none; background: var(--pressed); }
+  .btn.primary { border-color: var(--glow); box-shadow: var(--shift) var(--shift) 0 var(--copy-accent); }
+  .btn.primary:active { box-shadow: none; }
+
+  /* ---------- Layout ---------- */
+  main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "rail" "policy";
+    gap: 40px;
+  }
+  .policy { grid-area: policy; min-width: 0; }
+  .rail { grid-area: rail; min-width: 0; }
+  @media (min-width: 860px) {
+    main {
+      grid-template-columns: minmax(0, 1fr) 320px;
+      grid-template-areas: "policy rail";
+      column-gap: 64px;
+    }
+    .rail { position: sticky; top: 24px; align-self: start; }
+  }
+
+  /* Overview specimen plate */
+  .facts { padding: 14px 18px 6px; margin-right: var(--shift); }
+  .facts .bar { display: flex; justify-content: space-between; gap: 8px; margin: 0; padding: 0 0 12px; border-bottom: 1px solid var(--hairline); color: var(--ink); font: 400 12px/1.3 var(--mono); }
+  .facts .bar b { color: var(--glow-accent); font-weight: 400; }
+  .facts dl { margin: 0; }
+  .facts dl > div { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--rule); }
+  .facts dl > div:last-child { border-bottom: 0; }
+  .facts dt { font: 400 12px/1.4 var(--mono); color: var(--ink); }
+  .facts dd { margin: 0; text-align: right; font: 500 16px/1.3 var(--serif); color: var(--ink-bright); }
+  .facts dd.none::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 8px; vertical-align: 2px; background: var(--glow-accent); box-shadow: 2px 2px 0 var(--copy); }
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 26px var(--shift) 0 0; }
+  .actions .wide { grid-column: 1 / -1; }
+
+  /* Policy editorial column */
+  .policy section { counter-reset: clause; scroll-margin-top: 24px; }
+  /* DOM keeps the original order (title, then date line); the date line prints above as the eyebrow. */
+  .masthead { display: flex; flex-direction: column-reverse; }
+  .eyebrow { margin: 0 0 18px; color: var(--glow-accent); font: 400 13px/1.5 var(--mono); text-wrap: pretty; }
+  .eyebrow::before { content: ""; display: inline-block; vertical-align: 0; margin-right: 10px; width: 18px; height: 8px; background: linear-gradient(90deg, var(--glow-accent) 0 10px, transparent 10px), var(--copy); background-size: auto, 10px 8px; background-position: 0 0, 6px 0; background-repeat: no-repeat; }
+  .eyebrow code { font: inherit; color: inherit; background: none; padding: 0; }
+  h1 {
+    margin: 0 0 26px;
+    color: var(--ink-bright);
+    font: 300 clamp(36px, 5.4vw, 58px)/1.04 var(--serif);
+    letter-spacing: -.012em;
+    overflow-wrap: break-word;
+  }
+  h1 em { font-style: normal; font-weight: 500; color: var(--ink-bright); text-shadow: 2px 2px 0 color-mix(in srgb, var(--glow) 55%, transparent); }
+
+  .lead { padding: 22px 24px 22px; margin: 0 var(--shift) 44px 0; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; padding: 0; list-style: none; }
+  .tags li { font: 400 12px/1 var(--mono); color: var(--ink-bright); padding: 6px 9px; border: 1px solid var(--hairline); }
+  .tags li:first-child { border-color: var(--glow-accent); }
+  .tags li:last-child { border-color: var(--glow); color: var(--glow); }
   .lead p { margin: 0; color: var(--ink); }
-  footer { margin-top: 56px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--faint); font-size: 14px; }
+
+  /* Clauses: PT Mono numbers, a grainRow two-ink tick, hairline separators. */
+  .clause {
+    position: relative;
+    counter-increment: clause;
+    padding: 26px 0 8px 64px;
+    border-top: 1px solid var(--rule);
+  }
+  .clause::before {
+    content: counter(clause, decimal-leading-zero);
+    position: absolute; left: 15px; top: 32px;
+    font: 400 13px/1 var(--mono); color: var(--glow);
+  }
+  .clause::after {
+    content: ""; position: absolute; left: 0; top: 29px; width: 5px; height: 19px;
+    background: linear-gradient(90deg, var(--glow-accent) 0 3px, var(--glow) 3px 5px);
+  }
+  h2 { margin: 0 0 12px; color: var(--ink-bright); font: 500 24px/1.25 var(--serif); }
+  .clause p { margin: 0 0 16px; }
+  .clause ul { list-style: none; margin: 0 0 16px; padding: 0; }
+  .clause li { position: relative; padding-left: 24px; margin-bottom: 8px; }
+  .clause li::before {
+    content: ""; position: absolute; left: 1px; top: .62em; width: 7px; height: 7px;
+    background: var(--glow-accent); box-shadow: 2px 2px 0 var(--copy);
+  }
+  .xref { margin: -2px 0 18px; }
+  .xref a {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 7px 11px; border: 1px solid var(--glow-accent);
+    box-shadow: 2px 2px 0 var(--copy);
+    color: var(--ink-bright); text-decoration: none;
+    font: 400 12px/1.4 var(--mono);
+  }
+  .xref a:hover { background: var(--pressed); }
+  .xref a span { color: var(--glow); }
+  .between { margin: 72px 0 64px; }
+
+  footer.foot { margin-top: 64px; padding-top: 18px; border-top: 1px solid var(--hairline); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 20px; color: var(--ink); font: 400 12px/1.5 var(--mono); }
+
+  @media (max-width: 520px) {
+    .wrap { padding: 0 18px 48px; }
+    header { padding-top: 22px; }
+    .reg { margin-bottom: 32px; }
+    main { gap: 40px; }
+    .marks::before { inset: -12px; }
+    .lead { padding: 18px 18px; }
+    .clause { padding: 46px 0 6px 0; }
+    .clause::before { left: 15px; top: 24px; }
+    .clause::after { top: 21px; }
+    h2 { font-size: 22px; }
+    .between { margin: 56px 0 48px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div class="brand">
-      <svg viewBox="0 0 175.01 151.56" aria-hidden="true"><path d="M85.70,0.00 L89.30,0.00 L92.50,81.00 L87.50,87.00 L82.50,81.00 Z M175.01,148.44 L173.21,151.56 L101.46,113.83 L98.76,106.50 L106.46,105.17 Z M1.80,151.56 L0.00,148.44 L68.55,105.17 L76.24,106.50 L73.55,113.83 Z M96.70,26.00 L96.70,94.69 L156.19,129.03 L157.99,125.91 L106.30,89.15 L100.30,26.00 Z M146.99,144.97 L87.50,110.62 L28.02,144.97 L29.82,148.09 L87.50,121.71 L145.19,148.09 Z M18.82,129.03 L78.30,94.69 L78.30,26.00 L74.70,26.00 L68.70,89.15 L17.02,125.91 Z"/></svg>
-      <span>Stellar Launcher</span>
-    </div>
-    <nav aria-label="Language">
+    <a class="brand" href="./" aria-label="Stellar Launcher — Privacy policy">
+      <span class="emblem" aria-hidden="true">
+        <svg class="peach" viewBox="0 0 175.01 151.56"><use href="#star"/></svg>
+        <svg class="teal" viewBox="0 0 175.01 151.56"><path id="star" d="M85.70,0.00 L89.30,0.00 L92.50,81.00 L87.50,87.00 L82.50,81.00 Z M175.01,148.44 L173.21,151.56 L101.46,113.83 L98.76,106.50 L106.46,105.17 Z M1.80,151.56 L0.00,148.44 L68.55,105.17 L76.24,106.50 L73.55,113.83 Z M96.70,26.00 L96.70,94.69 L156.19,129.03 L157.99,125.91 L106.30,89.15 L100.30,26.00 Z M146.99,144.97 L87.50,110.62 L28.02,144.97 L29.82,148.09 L87.50,121.71 L145.19,148.09 Z M18.82,129.03 L78.30,94.69 L78.30,26.00 L74.70,26.00 L68.70,89.15 L17.02,125.91 Z"/></svg>
+      </span>
+      <span><b>Stellar Launcher</b><small>Grain · two-ink riso</small></span>
+    </a>
+    <nav class="site" aria-label="Site">
       <a href="#en" lang="en">English</a>
       <a href="#ru" lang="ru">Русский</a>
+      <a href="accessibility.html">Accessibility disclosure</a>
+      <div class="switch" role="group" aria-label="Grain palette">
+        <button type="button" data-set="studio" aria-pressed="false"><i aria-hidden="true"></i>Studio</button>
+        <button type="button" data-set="riso" aria-pressed="true"><i aria-hidden="true"></i>Riso</button>
+        <button type="button" data-set="cinema" aria-pressed="false"><i aria-hidden="true"></i>Cinema</button>
+      </div>
     </nav>
   </header>
+  <div class="reg" aria-hidden="true"></div>
 
-  <section id="en" lang="en">
-    <h1>Privacy Policy</h1>
-    <p class="meta">Stellar Launcher for Android (<code>app.stellar.launcher</code>) · Effective 10 November 2026</p>
+  <main>
+    <aside class="rail" aria-label="Overview">
+      <div class="riso facts marks">
+        <p class="bar"><b>Specimen 00</b><span>Overview</span></p>
+        <dl>
+          <div><dt>Personal data</dt><dd class="none">None</dd></div>
+          <div><dt>Ads &amp; analytics</dt><dd class="none">None</dd></div>
+          <div><dt>Servers</dt><dd class="none">None</dd></div>
+          <div><dt>Storage</dt><dd>Private on-device</dd></div>
+          <div><dt>Accessibility</dt><dd>Optional lock only</dd></div>
+        </dl>
+      </div>
+      <nav class="actions" aria-label="On this page">
+        <a class="btn" href="#en" lang="en">English <span>#en</span></a>
+        <a class="btn" href="#ru" lang="ru">Русский <span>#ru</span></a>
+        <a class="btn primary wide" href="accessibility.html">Accessibility disclosure <span>0:32 video</span></a>
+        <a class="btn wide" href="mailto:petrenko.mixa@gmail.com">petrenko.mixa@gmail.com <span>Email</span></a>
+      </nav>
+    </aside>
 
-    <div class="lead">
-      <p><strong>Stellar Launcher collects no personal data.</strong> It has no account, no ads, no analytics and no servers of its own. The signs you draw, your layout and your settings stay on your phone.</p>
+    <div class="policy">
+      <section id="en" lang="en" aria-labelledby="en-title">
+        <div class="masthead">
+          <h1 id="en-title">Privacy <em>Policy</em></h1>
+          <p class="eyebrow">Stellar Launcher for Android (<code>app.stellar.launcher</code>) · Effective 10 November 2026</p>
+        </div>
+
+        <div class="riso lead marks">
+          <ul class="tags" aria-label="Summary">
+            <li>No personal data</li>
+            <li>No ads or analytics</li>
+            <li>On-device only</li>
+          </ul>
+          <p><strong>Stellar Launcher collects no personal data.</strong> It has no account, no ads, no analytics and no servers of its own. The signs you draw, your layout and your settings stay on your phone.</p>
+        </div>
+
+        <div class="clause">
+          <h2>What Stellar does not collect</h2>
+          <p>Stellar does not collect, send or sell any of the following:</p>
+          <ul>
+            <li>your name, email address, phone number, contacts or location;</li>
+            <li>device identifiers or advertising identifiers;</li>
+            <li>usage statistics, crash reports or diagnostics;</li>
+            <li>the signs you draw or the list of apps on your phone.</li>
+          </ul>
+        </div>
+
+        <div class="clause">
+          <h2>Data that stays on your phone</h2>
+          <p>To work as a home screen, Stellar keeps these things in its private storage on the phone:</p>
+          <ul>
+            <li>the signs you teach and the app each one opens;</li>
+            <li>your home layout, dock, theme, wallpaper, gesture effect and vibration settings;</li>
+            <li>a copy of a picture, if you choose one as your wallpaper through the Android photo picker;</li>
+            <li>the apps you hide, your access key (a key sign or a PIN) and your spare code;</li>
+            <li>whether Google Play reports a Stellar Pro plan as owned.</li>
+          </ul>
+          <p>None of it is sent to the developer or to anyone else. Uninstalling Stellar, or clearing its storage in Android settings, removes all of it.</p>
+        </div>
+
+        <div class="clause">
+          <h2>The list of installed apps</h2>
+          <p>A launcher has to show your apps and open them. Stellar asks Android for the apps that have a launcher icon (through the <code>LauncherApps</code> system service and a query for launcher activities) and reads their names, icons and package names. This list is used only on the phone: to draw the dock, the app sphere and search results, and to bind signs to apps. A cached copy is kept on the phone so the dock appears as soon as the launcher restarts. The list is never transmitted.</p>
+        </div>
+
+        <div class="clause">
+          <h2>Accessibility service (optional)</h2>
+          <p>The setting “Double tap locks screen” is off until you turn the service on yourself in Android's Accessibility settings. Android lets an app lock the screen, with fingerprint unlock still working, only through an accessibility service.</p>
+          <p>Stellar's service does one thing: it asks Android to lock the screen (<code>GLOBAL_ACTION_LOCK_SCREEN</code>) when you double-tap the empty home screen. It is declared with no accessibility event types and with <code>canRetrieveWindowContent="false"</code>, so it receives no accessibility events, cannot read the contents of any window, cannot see what you type and does not observe other apps. It collects and stores nothing. You can turn it off at any time in Android settings.</p>
+          <p class="xref"><a href="accessibility.html">Watch the in-app disclosure recording <span aria-hidden="true">→</span></a></p>
+        </div>
+
+        <div class="clause">
+          <h2>Permissions</h2>
+          <ul>
+            <li><strong>Vibration</strong> (<code>VIBRATE</code>): to play the vibration patterns you choose.</li>
+            <li><strong>Set wallpaper</strong> (<code>SET_WALLPAPER</code>): to show the wallpaper you pick in Stellar as the system home-screen wallpaper. The lock-screen wallpaper is not changed.</li>
+            <li><strong>Request app removal</strong> (<code>REQUEST_DELETE_PACKAGES</code>): to open Android's own uninstall dialog when you choose “Uninstall” in an app's menu. Android asks you to confirm.</li>
+          </ul>
+          <p>The Google Play version also carries three permissions added by the Google Play Billing library so that purchases can be processed: billing (<code>com.android.vending.BILLING</code>), network access (<code>INTERNET</code>) and network state (<code>ACCESS_NETWORK_STATE</code>). Stellar's own code makes no network requests. Stellar does not ask for access to your location, contacts, camera, microphone, files, phone calls or notifications.</p>
+        </div>
+
+        <div class="clause">
+          <h2>Backups</h2>
+          <p>Stellar itself uploads nothing. If Android backup or device-to-device transfer is turned on, Android may copy three files (your settings, your layout and your signs) so they return on a new phone. A cloud backup is stored by Google under your Google account and is covered by <a href="https://policies.google.com/privacy" rel="noopener">Google's Privacy Policy</a>; a device-to-device transfer copies the files straight to your new phone. Your hidden apps, access key, spare code and purchase status are excluded from backups and transfers. You can turn backup off in Android settings.</p>
+        </div>
+
+        <div class="clause">
+          <h2>Purchases</h2>
+          <p>Stellar Pro (a monthly or yearly subscription, or a one-time lifetime purchase) is sold through Google Play Billing. Payments are processed by Google. A purchase gives Stellar no card details, name or email address: Google Play only tells the app whether a Stellar Pro plan is owned by the Google account signed in to Google Play, and the app keeps that answer on the phone. Google handles purchase data under <a href="https://policies.google.com/privacy" rel="noopener">its own Privacy Policy</a>.</p>
+        </div>
+
+        <div class="clause">
+          <h2>Sharing with third parties</h2>
+          <p>Stellar shares no data with third parties. It contains no advertising or analytics SDKs.</p>
+        </div>
+
+        <div class="clause">
+          <h2>Deleting your data</h2>
+          <p>Because the developer holds none of your data, there is nothing to request or delete on the developer's side. To erase everything Stellar stored, clear its storage in Android settings or uninstall the app. Android backups are managed in your Google account's backup settings.</p>
+        </div>
+
+        <div class="clause">
+          <h2>Children</h2>
+          <p>Stellar does not knowingly collect personal data from anyone, including children.</p>
+        </div>
+
+        <div class="clause">
+          <h2>Changes to this policy</h2>
+          <p>If this policy changes, the new version will be published on this page with a new effective date.</p>
+        </div>
+
+        <div class="clause">
+          <h2>Contact</h2>
+          <p>Questions about privacy: <a href="mailto:petrenko.mixa@gmail.com">petrenko.mixa@gmail.com</a></p>
+        </div>
+      </section>
+
+      <div class="reg between" aria-hidden="true"></div>
+
+      <section id="ru" lang="ru" aria-labelledby="ru-title">
+        <div class="masthead">
+          <h1 id="ru-title">Политика <em>конфиденциальности</em></h1>
+          <p class="eyebrow">Stellar Launcher для Android (<code>app.stellar.launcher</code>) · Действует с 10 ноября 2026 года</p>
+        </div>
+
+        <div class="riso lead marks">
+          <ul class="tags" aria-label="Кратко">
+            <li>Без сбора данных</li>
+            <li>Без рекламы и аналитики</li>
+            <li>Только на телефоне</li>
+          </ul>
+          <p><strong>Stellar Launcher не собирает персональные данные.</strong> В приложении нет аккаунта, рекламы, аналитики и собственных серверов. Знаки, которые вы рисуете, раскладка и настройки остаются на вашем телефоне.</p>
+        </div>
+
+        <div class="clause">
+          <h2>Что Stellar не собирает</h2>
+          <p>Stellar не собирает, не отправляет и не продаёт:</p>
+          <ul>
+            <li>имя, адрес электронной почты, номер телефона, контакты и местоположение;</li>
+            <li>идентификаторы устройства и рекламные идентификаторы;</li>
+            <li>статистику использования, отчёты о сбоях и диагностику;</li>
+            <li>знаки, которые вы рисуете, и список приложений на телефоне.</li>
+          </ul>
+        </div>
+
+        <div class="clause">
+          <h2>Данные, которые остаются на телефоне</h2>
+          <p>Чтобы работать главным экраном, Stellar хранит в своей закрытой памяти на телефоне:</p>
+          <ul>
+            <li>выученные знаки и приложение, которое открывает каждый из них;</li>
+            <li>раскладку главного экрана, панель, тему, обои, эффект жеста и настройки вибрации;</li>
+            <li>копию картинки, если вы выбрали её для обоев через системное окно выбора фото Android;</li>
+            <li>скрытые приложения, ключ доступа (знак-ключ или PIN-код) и запасной код;</li>
+            <li>сведения о том, сообщает ли Google Play о купленном тарифе Stellar Pro.</li>
+          </ul>
+          <p>Ничто из этого не передаётся разработчику или кому-либо ещё. Удаление Stellar или очистка его хранилища в настройках Android стирает все эти данные.</p>
+        </div>
+
+        <div class="clause">
+          <h2>Список установленных приложений</h2>
+          <p>Лаунчер должен показывать приложения и открывать их. Stellar запрашивает у Android приложения, у которых есть значок запуска (через системную службу <code>LauncherApps</code> и запрос активностей запуска), и читает их названия, значки и имена пакетов. Этот список используется только на телефоне: чтобы нарисовать панель, сферу приложений и результаты поиска и привязать знаки к приложениям. Его копия хранится на телефоне, чтобы панель появлялась сразу после перезапуска лаунчера. Список никуда не передаётся.</p>
+        </div>
+
+        <div class="clause">
+          <h2>Служба специальных возможностей (по желанию)</h2>
+          <p>Настройка «Блокировка двойным касанием» не работает, пока вы сами не включите службу в настройках специальных возможностей Android. Android разрешает приложению блокировать экран так, чтобы разблокировка по отпечатку продолжала работать, только через службу специальных возможностей.</p>
+          <p>Служба Stellar делает одно: просит Android заблокировать экран (<code>GLOBAL_ACTION_LOCK_SCREEN</code>), когда вы дважды касаетесь пустого места на главном экране. Она объявлена без типов событий и с параметром <code>canRetrieveWindowContent="false"</code>, поэтому не получает событий специальных возможностей, не может читать содержимое окон, не видит, что вы печатаете, и не следит за другими приложениями. Она ничего не собирает и не хранит. Отключить её можно в любой момент в настройках Android.</p>
+          <p class="xref"><a href="accessibility.html" hreflang="en">Видеозапись раскрытия в приложении (на английском) <span aria-hidden="true">→</span></a></p>
+        </div>
+
+        <div class="clause">
+          <h2>Разрешения</h2>
+          <ul>
+            <li><strong>Вибрация</strong> (<code>VIBRATE</code>): чтобы воспроизводить выбранные вами рисунки вибрации.</li>
+            <li><strong>Установка обоев</strong> (<code>SET_WALLPAPER</code>): чтобы показывать обои, выбранные в Stellar, как системные обои главного экрана. Обои экрана блокировки не меняются.</li>
+            <li><strong>Запрос на удаление приложений</strong> (<code>REQUEST_DELETE_PACKAGES</code>): чтобы открыть системное окно удаления, когда вы выбираете «Удалить» в меню приложения. Android попросит подтверждение.</li>
+          </ul>
+          <p>В версии из Google Play также есть три разрешения, которые добавляет библиотека Google Play Billing для обработки покупок: оплата (<code>com.android.vending.BILLING</code>), доступ к сети (<code>INTERNET</code>) и состояние сети (<code>ACCESS_NETWORK_STATE</code>). Собственный код Stellar в сеть не обращается. Stellar не запрашивает доступ к местоположению, контактам, камере, микрофону, файлам, звонкам и уведомлениям.</p>
+        </div>
+
+        <div class="clause">
+          <h2>Резервные копии</h2>
+          <p>Сам Stellar ничего не загружает в сеть. Если включено резервное копирование Android или перенос данных между устройствами, Android может скопировать три файла (настройки, раскладку и знаки), чтобы они вернулись на новом телефоне. Облачную копию хранит Google в вашем аккаунте Google, и на неё распространяется <a href="https://policies.google.com/privacy" rel="noopener">Политика конфиденциальности Google</a>; при переносе между устройствами файлы копируются прямо на новый телефон. Скрытые приложения, ключ доступа, запасной код и сведения о покупке в резервные копии и перенос не попадают. Резервное копирование можно отключить в настройках Android.</p>
+        </div>
+
+        <div class="clause">
+          <h2>Покупки</h2>
+          <p>Stellar Pro (подписка на месяц или на год либо разовая покупка навсегда) продаётся через Google Play Billing. Платежи обрабатывает Google. При покупке Stellar не получает данные вашей карты, имя и адрес электронной почты: Google Play сообщает приложению только то, куплен ли тариф Stellar Pro аккаунтом Google, в который выполнен вход в Google Play, и приложение хранит этот ответ на телефоне. Google обрабатывает данные о покупках по <a href="https://policies.google.com/privacy" rel="noopener">своей Политике конфиденциальности</a>.</p>
+        </div>
+
+        <div class="clause">
+          <h2>Передача третьим лицам</h2>
+          <p>Stellar не передаёт данные третьим лицам. В приложении нет рекламных и аналитических SDK.</p>
+        </div>
+
+        <div class="clause">
+          <h2>Удаление данных</h2>
+          <p>У разработчика нет ваших данных, поэтому на его стороне нечего запрашивать или удалять. Чтобы стереть всё, что сохранил Stellar, очистите хранилище приложения в настройках Android или удалите приложение. Резервными копиями Android вы управляете в настройках резервного копирования своего аккаунта Google.</p>
+        </div>
+
+        <div class="clause">
+          <h2>Дети</h2>
+          <p>Stellar сознательно не собирает персональные данные ни у кого, включая детей.</p>
+        </div>
+
+        <div class="clause">
+          <h2>Изменения политики</h2>
+          <p>Если политика изменится, новая версия будет опубликована на этой странице с новой датой вступления в силу.</p>
+        </div>
+
+        <div class="clause">
+          <h2>Контакты</h2>
+          <p>Вопросы о конфиденциальности: <a href="mailto:petrenko.mixa@gmail.com">petrenko.mixa@gmail.com</a></p>
+        </div>
+      </section>
     </div>
+  </main>
 
-    <h2>What Stellar does not collect</h2>
-    <p>Stellar does not collect, send or sell any of the following:</p>
-    <ul>
-      <li>your name, email address, phone number, contacts or location;</li>
-      <li>device identifiers or advertising identifiers;</li>
-      <li>usage statistics, crash reports or diagnostics;</li>
-      <li>the signs you draw or the list of apps on your phone.</li>
-    </ul>
-
-    <h2>Data that stays on your phone</h2>
-    <p>To work as a home screen, Stellar keeps these things in its private storage on the phone:</p>
-    <ul>
-      <li>the signs you teach and the app each one opens;</li>
-      <li>your home layout, dock, theme, wallpaper, gesture effect and vibration settings;</li>
-      <li>a copy of a picture, if you choose one as your wallpaper through the Android photo picker;</li>
-      <li>the apps you hide, your access key (a key sign or a PIN) and your spare code;</li>
-      <li>whether Google Play reports a Stellar Pro plan as owned.</li>
-    </ul>
-    <p>None of it is sent to the developer or to anyone else. Uninstalling Stellar, or clearing its storage in Android settings, removes all of it.</p>
-
-    <h2>The list of installed apps</h2>
-    <p>A launcher has to show your apps and open them. Stellar asks Android for the apps that have a launcher icon (through the <code>LauncherApps</code> system service and a query for launcher activities) and reads their names, icons and package names. This list is used only on the phone: to draw the dock, the app sphere and search results, and to bind signs to apps. A cached copy is kept on the phone so the dock appears as soon as the launcher restarts. The list is never transmitted.</p>
-
-    <h2>Accessibility service (optional)</h2>
-    <p>The setting “Double tap locks screen” is off until you turn the service on yourself in Android's Accessibility settings. Android lets an app lock the screen, with fingerprint unlock still working, only through an accessibility service.</p>
-    <p>Stellar's service does one thing: it asks Android to lock the screen (<code>GLOBAL_ACTION_LOCK_SCREEN</code>) when you double-tap the empty home screen. It is declared with no accessibility event types and with <code>canRetrieveWindowContent="false"</code>, so it receives no accessibility events, cannot read the contents of any window, cannot see what you type and does not observe other apps. It collects and stores nothing. You can turn it off at any time in Android settings.</p>
-
-    <h2>Permissions</h2>
-    <ul>
-      <li><strong>Vibration</strong> (<code>VIBRATE</code>): to play the vibration patterns you choose.</li>
-      <li><strong>Set wallpaper</strong> (<code>SET_WALLPAPER</code>): to show the wallpaper you pick in Stellar as the system home-screen wallpaper. The lock-screen wallpaper is not changed.</li>
-      <li><strong>Request app removal</strong> (<code>REQUEST_DELETE_PACKAGES</code>): to open Android's own uninstall dialog when you choose “Uninstall” in an app's menu. Android asks you to confirm.</li>
-    </ul>
-    <p>The Google Play version also carries three permissions added by the Google Play Billing library so that purchases can be processed: billing (<code>com.android.vending.BILLING</code>), network access (<code>INTERNET</code>) and network state (<code>ACCESS_NETWORK_STATE</code>). Stellar's own code makes no network requests. Stellar does not ask for access to your location, contacts, camera, microphone, files, phone calls or notifications.</p>
-
-    <h2>Backups</h2>
-    <p>Stellar itself uploads nothing. If Android backup or device-to-device transfer is turned on, Android may copy three files (your settings, your layout and your signs) so they return on a new phone. A cloud backup is stored by Google under your Google account and is covered by <a href="https://policies.google.com/privacy" rel="noopener">Google's Privacy Policy</a>; a device-to-device transfer copies the files straight to your new phone. Your hidden apps, access key, spare code and purchase status are excluded from backups and transfers. You can turn backup off in Android settings.</p>
-
-    <h2>Purchases</h2>
-    <p>Stellar Pro (a monthly or yearly subscription, or a one-time lifetime purchase) is sold through Google Play Billing. Payments are processed by Google. A purchase gives Stellar no card details, name or email address: Google Play only tells the app whether a Stellar Pro plan is owned by the Google account signed in to Google Play, and the app keeps that answer on the phone. Google handles purchase data under <a href="https://policies.google.com/privacy" rel="noopener">its own Privacy Policy</a>.</p>
-
-    <h2>Sharing with third parties</h2>
-    <p>Stellar shares no data with third parties. It contains no advertising or analytics SDKs.</p>
-
-    <h2>Deleting your data</h2>
-    <p>Because the developer holds none of your data, there is nothing to request or delete on the developer's side. To erase everything Stellar stored, clear its storage in Android settings or uninstall the app. Android backups are managed in your Google account's backup settings.</p>
-
-    <h2>Children</h2>
-    <p>Stellar does not knowingly collect personal data from anyone, including children.</p>
-
-    <h2>Changes to this policy</h2>
-    <p>If this policy changes, the new version will be published on this page with a new effective date.</p>
-
-    <h2>Contact</h2>
-    <p>Questions about privacy: <a href="mailto:petrenko.mixa@gmail.com">petrenko.mixa@gmail.com</a></p>
-  </section>
-
-  <section id="ru" lang="ru">
-    <h1>Политика конфиденциальности</h1>
-    <p class="meta">Stellar Launcher для Android (<code>app.stellar.launcher</code>) · Действует с 10 ноября 2026 года</p>
-
-    <div class="lead">
-      <p><strong>Stellar Launcher не собирает персональные данные.</strong> В приложении нет аккаунта, рекламы, аналитики и собственных серверов. Знаки, которые вы рисуете, раскладка и настройки остаются на вашем телефоне.</p>
-    </div>
-
-    <h2>Что Stellar не собирает</h2>
-    <p>Stellar не собирает, не отправляет и не продаёт:</p>
-    <ul>
-      <li>имя, адрес электронной почты, номер телефона, контакты и местоположение;</li>
-      <li>идентификаторы устройства и рекламные идентификаторы;</li>
-      <li>статистику использования, отчёты о сбоях и диагностику;</li>
-      <li>знаки, которые вы рисуете, и список приложений на телефоне.</li>
-    </ul>
-
-    <h2>Данные, которые остаются на телефоне</h2>
-    <p>Чтобы работать главным экраном, Stellar хранит в своей закрытой памяти на телефоне:</p>
-    <ul>
-      <li>выученные знаки и приложение, которое открывает каждый из них;</li>
-      <li>раскладку главного экрана, панель, тему, обои, эффект жеста и настройки вибрации;</li>
-      <li>копию картинки, если вы выбрали её для обоев через системное окно выбора фото Android;</li>
-      <li>скрытые приложения, ключ доступа (знак-ключ или PIN-код) и запасной код;</li>
-      <li>сведения о том, сообщает ли Google Play о купленном тарифе Stellar Pro.</li>
-    </ul>
-    <p>Ничто из этого не передаётся разработчику или кому-либо ещё. Удаление Stellar или очистка его хранилища в настройках Android стирает все эти данные.</p>
-
-    <h2>Список установленных приложений</h2>
-    <p>Лаунчер должен показывать приложения и открывать их. Stellar запрашивает у Android приложения, у которых есть значок запуска (через системную службу <code>LauncherApps</code> и запрос активностей запуска), и читает их названия, значки и имена пакетов. Этот список используется только на телефоне: чтобы нарисовать панель, сферу приложений и результаты поиска и привязать знаки к приложениям. Его копия хранится на телефоне, чтобы панель появлялась сразу после перезапуска лаунчера. Список никуда не передаётся.</p>
-
-    <h2>Служба специальных возможностей (по желанию)</h2>
-    <p>Настройка «Блокировка двойным касанием» не работает, пока вы сами не включите службу в настройках специальных возможностей Android. Android разрешает приложению блокировать экран так, чтобы разблокировка по отпечатку продолжала работать, только через службу специальных возможностей.</p>
-    <p>Служба Stellar делает одно: просит Android заблокировать экран (<code>GLOBAL_ACTION_LOCK_SCREEN</code>), когда вы дважды касаетесь пустого места на главном экране. Она объявлена без типов событий и с параметром <code>canRetrieveWindowContent="false"</code>, поэтому не получает событий специальных возможностей, не может читать содержимое окон, не видит, что вы печатаете, и не следит за другими приложениями. Она ничего не собирает и не хранит. Отключить её можно в любой момент в настройках Android.</p>
-
-    <h2>Разрешения</h2>
-    <ul>
-      <li><strong>Вибрация</strong> (<code>VIBRATE</code>): чтобы воспроизводить выбранные вами рисунки вибрации.</li>
-      <li><strong>Установка обоев</strong> (<code>SET_WALLPAPER</code>): чтобы показывать обои, выбранные в Stellar, как системные обои главного экрана. Обои экрана блокировки не меняются.</li>
-      <li><strong>Запрос на удаление приложений</strong> (<code>REQUEST_DELETE_PACKAGES</code>): чтобы открыть системное окно удаления, когда вы выбираете «Удалить» в меню приложения. Android попросит подтверждение.</li>
-    </ul>
-    <p>В версии из Google Play также есть три разрешения, которые добавляет библиотека Google Play Billing для обработки покупок: оплата (<code>com.android.vending.BILLING</code>), доступ к сети (<code>INTERNET</code>) и состояние сети (<code>ACCESS_NETWORK_STATE</code>). Собственный код Stellar в сеть не обращается. Stellar не запрашивает доступ к местоположению, контактам, камере, микрофону, файлам, звонкам и уведомлениям.</p>
-
-    <h2>Резервные копии</h2>
-    <p>Сам Stellar ничего не загружает в сеть. Если включено резервное копирование Android или перенос данных между устройствами, Android может скопировать три файла (настройки, раскладку и знаки), чтобы они вернулись на новом телефоне. Облачную копию хранит Google в вашем аккаунте Google, и на неё распространяется <a href="https://policies.google.com/privacy" rel="noopener">Политика конфиденциальности Google</a>; при переносе между устройствами файлы копируются прямо на новый телефон. Скрытые приложения, ключ доступа, запасной код и сведения о покупке в резервные копии и перенос не попадают. Резервное копирование можно отключить в настройках Android.</p>
-
-    <h2>Покупки</h2>
-    <p>Stellar Pro (подписка на месяц или на год либо разовая покупка навсегда) продаётся через Google Play Billing. Платежи обрабатывает Google. При покупке Stellar не получает данные вашей карты, имя и адрес электронной почты: Google Play сообщает приложению только то, куплен ли тариф Stellar Pro аккаунтом Google, в который выполнен вход в Google Play, и приложение хранит этот ответ на телефоне. Google обрабатывает данные о покупках по <a href="https://policies.google.com/privacy" rel="noopener">своей Политике конфиденциальности</a>.</p>
-
-    <h2>Передача третьим лицам</h2>
-    <p>Stellar не передаёт данные третьим лицам. В приложении нет рекламных и аналитических SDK.</p>
-
-    <h2>Удаление данных</h2>
-    <p>У разработчика нет ваших данных, поэтому на его стороне нечего запрашивать или удалять. Чтобы стереть всё, что сохранил Stellar, очистите хранилище приложения в настройках Android или удалите приложение. Резервными копиями Android вы управляете в настройках резервного копирования своего аккаунта Google.</p>
-
-    <h2>Дети</h2>
-    <p>Stellar сознательно не собирает персональные данные ни у кого, включая детей.</p>
-
-    <h2>Изменения политики</h2>
-    <p>Если политика изменится, новая версия будет опубликована на этой странице с новой датой вступления в силу.</p>
-
-    <h2>Контакты</h2>
-    <p>Вопросы о конфиденциальности: <a href="mailto:petrenko.mixa@gmail.com">petrenko.mixa@gmail.com</a></p>
-  </section>
-
-  <footer>Stellar Launcher · app.stellar.launcher</footer>
+  <footer class="foot">
+    <span>Stellar Launcher · app.stellar.launcher</span>
+    <span>Printed in Grain · <span id="stop">Riso</span></span>
+  </footer>
 </div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var names = { studio: "Studio", riso: "Riso", cinema: "Cinema" };
+  var colors = { studio: "#0b0c10", riso: "#0c0c0d", cinema: "#0b0908" };
+  var switches = document.querySelectorAll(".switch button");
+  function setGrain(name) {
+    if (!names[name]) name = "riso";
+    root.setAttribute("data-grain", name);
+    switches.forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.set === name)); });
+    document.getElementById("stop").textContent = names[name];
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", colors[name]);
+    try { localStorage.setItem("stellar-grain", name); } catch (e) {}
+  }
+  switches.forEach(function (b) { b.addEventListener("click", function () { setGrain(b.dataset.set); }); });
+  try { var saved = localStorage.getItem("stellar-grain"); if (saved) setGrain(saved); } catch (e) {}
+})();
+</script>
 </body>
 </html>
