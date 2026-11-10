@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stellar Launcher — Accessibility Service Prominent Disclosure</title>
+<meta name="description" content="Unedited screen recording of Stellar Launcher's in-app Prominent Disclosure for its optional AccessibilityService (double tap locks screen).">
+<style>
+  :root {
+    color-scheme: dark light;
+    --bg: #080a0f;
+    --panel: #0f131b;
+    --ink: #eef2f8;
+    --dim: #b9c2d0;
+    --faint: #7f8a9c;
+    --line: rgba(200, 214, 235, 0.16);
+    --acc: #9fd8ee;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --ink: #12151b;
+      --dim: #3c4452;
+      --faint: #6b7483;
+      --line: rgba(20, 30, 50, 0.14);
+      --acc: #1f6f8f;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 17px/1.62 system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 22px 72px; }
+  header { padding: 44px 0 26px; border-bottom: 1px solid var(--line); }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand svg { width: 38px; height: 33px; flex: none; fill: var(--ink); }
+  .brand span { font: 600 25px/1.1 Georgia, "Times New Roman", serif; letter-spacing: 0.01em; }
+  nav { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
+  nav a {
+    padding: 7px 16px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--acc);
+    text-decoration: none;
+    font-size: 15px;
+  }
+  nav a:hover, nav a:focus-visible { border-color: var(--acc); outline: none; }
+  section { padding-top: 44px; }
+  h1 { margin: 0 0 6px; font: 600 38px/1.14 Georgia, "Times New Roman", serif; }
+  .meta { margin: 0 0 26px; color: var(--faint); font-size: 15px; }
+  h2 { margin: 36px 0 10px; font: 600 23px/1.25 Georgia, "Times New Roman", serif; }
+  p { margin: 0 0 14px; color: var(--dim); }
+  ul { margin: 0 0 14px; padding-left: 22px; color: var(--dim); }
+  li { margin-bottom: 9px; }
+  strong { color: var(--ink); font-weight: 600; }
+  code {
+    padding: 1px 6px;
+    border-radius: 6px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    font: 14px/1.4 ui-monospace, "Cascadia Mono", Consolas, "Liberation Mono", monospace;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+  a { color: var(--acc); }
+  .lead {
+    padding: 20px 22px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--panel);
+  }
+  .lead p { margin: 0; color: var(--ink); }
+  figure { margin: 30px 0 0; text-align: center; }
+  video {
+    display: block;
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    background: #000;
+  }
+  figcaption { margin-top: 14px; font-size: 15px; color: var(--faint); }
+  figcaption a { font-weight: 600; }
+  footer { margin-top: 56px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--faint); font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <svg viewBox="0 0 175.01 151.56" aria-hidden="true"><path d="M85.70,0.00 L89.30,0.00 L92.50,81.00 L87.50,87.00 L82.50,81.00 Z M175.01,148.44 L173.21,151.56 L101.46,113.83 L98.76,106.50 L106.46,105.17 Z M1.80,151.56 L0.00,148.44 L68.55,105.17 L76.24,106.50 L73.55,113.83 Z M96.70,26.00 L96.70,94.69 L156.19,129.03 L157.99,125.91 L106.30,89.15 L100.30,26.00 Z M146.99,144.97 L87.50,110.62 L28.02,144.97 L29.82,148.09 L87.50,121.71 L145.19,148.09 Z M18.82,129.03 L78.30,94.69 L78.30,26.00 L74.70,26.00 L68.70,89.15 L17.02,125.91 Z"/></svg>
+      <span>Stellar Launcher</span>
+    </div>
+    <nav aria-label="Site">
+      <a href="./">Privacy Policy</a>
+    </nav>
+  </header>
+
+  <section lang="en">
+    <h1>Accessibility Service Prominent Disclosure</h1>
+    <p class="meta">Stellar Launcher for Android (<code>app.stellar.launcher</code>) · Unedited screen recording</p>
+
+    <div class="lead">
+      <p><strong>The accessibility service is optional and off by default.</strong> It does one thing: lock the screen when you double-tap the empty home screen, with fingerprint unlock still working. It reads, collects and shares no personal or sensitive data.</p>
+    </div>
+
+    <figure>
+      <video controls autoplay muted playsinline preload="metadata" src="accessibility-disclosure.mp4">
+        Your browser cannot play this video. <a href="accessibility-disclosure.mp4">Download the MP4</a>.
+      </video>
+      <figcaption><a href="accessibility-disclosure.mp4">Open raw MP4 video</a></figcaption>
+    </figure>
+
+    <h2>What the recording shows</h2>
+    <ul>
+      <li><strong>App launch &amp; navigation.</strong> Opening Stellar Launcher, then Settings → Behaviour → “Double tap locks screen”.</li>
+      <li><strong>In-app Prominent Disclosure</strong> (<code>LockAccessDialog</code>). Shown before any system settings open. It explains why an <code>AccessibilityService</code> is required — to call <code>GLOBAL_ACTION_LOCK_SCREEN</code> while keeping fingerprint unlock working — and how to enable <code>"Stellar: lock on double tap"</code>.</li>
+      <li><strong>Decline / Cancel.</strong> Tapping <code>Cancel</code> leaves the service disabled and returns to Stellar Settings; the row stays <code>Off</code>.</li>
+      <li><strong>Consent / Enable.</strong> Tapping “Double tap locks screen” → <code>Open settings</code> → turning on <code>"Stellar: lock on double tap"</code> in Android Accessibility settings → returning to Stellar (<code>On</code>) → double-tapping the empty home screen locks the screen.</li>
+      <li><strong>Data &amp; privacy guarantees.</strong> The service is declared with <code>accessibilityEventTypes=""</code>, <code>canRetrieveWindowContent="false"</code> and <code>isAccessibilityTool="false"</code>. It receives no accessibility events, cannot read any window content, and reads, collects or shares zero personal or sensitive user data.</li>
+    </ul>
+
+    <p>You can turn the service off at any time in Android's Accessibility settings. Full details: <a href="./">Privacy Policy</a>.</p>
+  </section>
+
+  <footer>Stellar Launcher · app.stellar.launcher</footer>
+</div>
+</body>
+</html>
