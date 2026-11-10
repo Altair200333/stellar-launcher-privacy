@@ -1,135 +1,415 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-grain="riso">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Stellar Launcher — Accessibility Service Prominent Disclosure</title>
-<meta name="description" content="Unedited screen recording of Stellar Launcher's in-app Prominent Disclosure for its optional AccessibilityService (double tap locks screen).">
+<title>Stellar Launcher — Accessibility service prominent disclosure</title>
+<meta name="description" content="Unedited screen recording of Stellar Launcher's in-app prominent disclosure for its optional AccessibilityService (double tap locks screen). Off by default, zero data collected.">
+<meta name="theme-color" content="#0c0c0d">
+<link rel="icon" href="data:,">
+<link rel="preload" href="fonts/alegreya_sans_light.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="fonts/alegreya_sans.ttf" as="font" type="font/ttf" crossorigin>
 <style>
+  /* Self-hosted Stellar Launcher fonts (res/font). No external requests. */
+  @font-face { font-family: "Alegreya Sans"; src: url("fonts/alegreya_sans_light.ttf") format("truetype"); font-weight: 300; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Alegreya Sans"; src: url("fonts/alegreya_sans.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Alegreya Sans"; src: url("fonts/alegreya_sans_medium.ttf") format("truetype"); font-weight: 500 700; font-style: normal; font-display: swap; }
+  @font-face { font-family: "PT Mono"; src: url("fonts/pt_mono.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
+
+  /* Grain palette stops (Palette.kt). Middle / Riso is the default. */
+  :root, [data-grain="riso"] {
+    --bg: #0c0c0d; --surface: #151516; --pressed: #232325; --hairline: #55565a;
+    --ink: #b4b2ad; --ink-bright: #efebe4; --highlight: #ffffff;
+    --glow: #ff9a6a; --glow-accent: #38b6ad;
+  }
+  [data-grain="studio"] {
+    --bg: #0b0c10; --surface: #14151a; --pressed: #22232a; --hairline: #545866;
+    --ink: #b0b3be; --ink-bright: #ecedf2; --glow: #ff5fa8; --glow-accent: #3a8fd8;
+  }
+  [data-grain="cinema"] {
+    --bg: #0b0908; --surface: #151210; --pressed: #25201c; --hairline: #5c544c;
+    --ink: #bcb1a3; --ink-bright: #efe6d6; --glow: #e4572e; --glow-accent: #d9a441;
+  }
   :root {
-    color-scheme: dark light;
-    --bg: #080a0f;
-    --panel: #0f131b;
-    --ink: #eef2f8;
-    --dim: #b9c2d0;
-    --faint: #7f8a9c;
-    --line: rgba(200, 214, 235, 0.16);
-    --acc: #9fd8ee;
+    color-scheme: dark;
+    --copy: var(--glow);
+    --copy: color-mix(in srgb, var(--glow) 85%, transparent);          /* RISO_COPY_ALPHA */
+    --copy-accent: var(--glow-accent);
+    --copy-accent: color-mix(in srgb, var(--glow-accent) 85%, transparent);
+    --line: 1.5px;                                                       /* RISO_LINE */
+    --shift: 3px;                                                        /* RISO_SHIFT */
+    --serif: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+    --mono: "PT Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
   }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #f6f7f9;
-      --panel: #ffffff;
-      --ink: #12151b;
-      --dim: #3c4452;
-      --faint: #6b7483;
-      --line: rgba(20, 30, 50, 0.14);
-      --acc: #1f6f8f;
-    }
-  }
+
   * { box-sizing: border-box; }
+  html { background: var(--bg); transition: background-color .25s ease; }
   body {
     margin: 0;
+    position: relative;
+    min-height: 100vh;
     background: var(--bg);
     color: var(--ink);
-    font: 17px/1.62 system-ui, -apple-system, "Segoe UI", sans-serif;
+    font: 400 18px/1.6 var(--serif);
     -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
   }
-  .wrap { max-width: 760px; margin: 0 auto; padding: 0 22px 72px; }
-  header { padding: 44px 0 26px; border-bottom: 1px solid var(--line); }
-  .brand { display: flex; align-items: center; gap: 14px; }
-  .brand svg { width: 38px; height: 33px; flex: none; fill: var(--ink); }
-  .brand span { font: 600 25px/1.1 Georgia, "Times New Roman", serif; letter-spacing: 0.01em; }
-  nav { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
-  nav a {
-    padding: 7px 16px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    color: var(--acc);
-    text-decoration: none;
-    font-size: 15px;
+  /* Colour film grain: gentle, never intercepts input. */
+  body::after {
+    content: "";
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    opacity: .08;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 1'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='2' intercept='-.6'/%3E%3CfeFuncG type='linear' slope='2' intercept='-.6'/%3E%3CfeFuncB type='linear' slope='2' intercept='-.6'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
   }
-  nav a:hover, nav a:focus-visible { border-color: var(--acc); outline: none; }
-  section { padding-top: 44px; }
-  h1 { margin: 0 0 6px; font: 600 38px/1.14 Georgia, "Times New Roman", serif; }
-  .meta { margin: 0 0 26px; color: var(--faint); font-size: 15px; }
-  h2 { margin: 36px 0 10px; font: 600 23px/1.25 Georgia, "Times New Roman", serif; }
-  p { margin: 0 0 14px; color: var(--dim); }
-  ul { margin: 0 0 14px; padding-left: 22px; color: var(--dim); }
-  li { margin-bottom: 9px; }
-  strong { color: var(--ink); font-weight: 600; }
+
+  a { color: var(--glow); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  a:hover { color: var(--ink-bright); }
+  :focus-visible { outline: var(--line) dashed var(--glow); outline-offset: 4px; }
+  strong { color: var(--ink-bright); font-weight: 500; }
   code {
-    padding: 1px 6px;
-    border-radius: 6px;
-    background: var(--panel);
-    border: 1px solid var(--line);
-    font: 14px/1.4 ui-monospace, "Cascadia Mono", Consolas, "Liberation Mono", monospace;
-    color: var(--ink);
+    font: 400 .8em/1.4 var(--mono);
+    color: var(--ink-bright);
+    background: var(--pressed);
+    padding: 1px 5px;
+    border-radius: 0;
     overflow-wrap: anywhere;
   }
-  a { color: var(--acc); }
-  .lead {
-    padding: 20px 22px;
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    background: var(--panel);
+  .mono { font-family: var(--mono); font-size: 13px; letter-spacing: .01em; }
+
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 24px 64px; }
+
+  /* ---------- Header ---------- */
+  header { display: flex; align-items: center; justify-content: space-between; gap: 18px 24px; flex-wrap: wrap; padding: 30px 0 22px; }
+  .brand { display: flex; align-items: center; gap: 14px; color: var(--ink-bright); text-decoration: none; }
+  .emblem { position: relative; width: 40px; height: 35px; flex: none; }
+  .emblem svg { position: absolute; left: 0; top: 0; width: 37px; height: 32px; }
+  .emblem .peach { fill: var(--copy); transform: translate(3px, 2px); }
+  .emblem .teal { fill: var(--glow-accent); mix-blend-mode: screen; }
+  .brand b { font: 500 25px/1 var(--serif); letter-spacing: .005em; }
+  .brand small { display: block; margin-top: 5px; color: var(--ink); font: 400 12px/1 var(--mono); }
+
+  nav { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  nav > a { font: 400 13px/1 var(--mono); color: var(--ink); text-decoration: none; padding: 6px 0; border-bottom: 1px solid var(--hairline); }
+  nav > a:hover { color: var(--glow); border-color: var(--glow); }
+
+  /* grainSwitch: a square teal frame with a hairline between the cells. */
+  .switch { display: inline-flex; border: var(--line) solid var(--glow-accent); border-radius: 0; background: var(--surface); }
+  .switch button {
+    appearance: none; border: 0; border-radius: 0; margin: 0;
+    background: transparent; color: var(--ink);
+    font: 400 12px/1 var(--mono);
+    padding: 8px 12px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px;
   }
+  .switch button + button { border-left: 1px solid var(--hairline); }
+  .switch button:hover { color: var(--ink-bright); }
+  .switch button[aria-pressed="true"] { background: var(--pressed); color: var(--ink-bright); }
+  .switch i { display: inline-block; width: 12px; height: 8px; position: relative; }
+  .switch i::before, .switch i::after { content: ""; position: absolute; width: 8px; height: 8px; top: 0; }
+  .switch i::before { left: 0; background: var(--sw-a); }
+  .switch i::after { left: 4px; background: var(--sw-b); mix-blend-mode: screen; opacity: .9; }
+  .switch [data-set="studio"] i { --sw-a: #3a8fd8; --sw-b: #ff5fa8; }
+  .switch [data-set="riso"] i   { --sw-a: #38b6ad; --sw-b: #ff9a6a; }
+  .switch [data-set="cinema"] i { --sw-a: #d9a441; --sw-b: #e4572e; }
+
+  /* Two-ink registration threshold rule. */
+  .reg { position: relative; height: 6px; margin-bottom: 44px; }
+  .reg::before, .reg::after { content: ""; position: absolute; left: 0; right: 0; height: var(--line); }
+  .reg::before { top: 0; background: var(--glow-accent); }
+  .reg::after { top: 2px; left: 3px; right: -3px; background: var(--copy); mix-blend-mode: screen; }
+
+  /* ---------- Riso geometry ---------- */
+  .riso {
+    position: relative;
+    background: var(--surface);
+    border: var(--line) solid var(--glow-accent);
+    border-radius: 0;
+    box-shadow: var(--shift) var(--shift) 0 var(--copy);
+  }
+  /* Registration crop marks at the plate corners. */
+  .marks::before {
+    content: ""; position: absolute; inset: -15px; pointer-events: none;
+    --c: var(--hairline);
+    background:
+      linear-gradient(var(--c), var(--c)) 0 5px / 11px 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) 5px 0 / 1px 11px no-repeat,
+      linear-gradient(var(--c), var(--c)) 100% 5px / 11px 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) calc(100% - 5px) 0 / 1px 11px no-repeat,
+      linear-gradient(var(--c), var(--c)) 0 calc(100% - 5px) / 11px 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) 5px 100% / 1px 11px no-repeat,
+      linear-gradient(var(--c), var(--c)) 100% calc(100% - 5px) / 11px 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) calc(100% - 5px) 100% / 1px 11px no-repeat;
+  }
+
+  /* grainButton: pressed, the box drops onto where its shadow was. */
+  .btn {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 13px 16px;
+    background: var(--surface);
+    color: var(--ink-bright);
+    border: var(--line) solid var(--glow-accent);
+    border-radius: 0;
+    box-shadow: var(--shift) var(--shift) 0 var(--copy);
+    font: 500 17px/1.2 var(--serif);
+    text-decoration: none;
+    transition: background-color .12s ease;
+  }
+  .btn span { font: 400 12px/1 var(--mono); color: var(--ink); }
+  .btn:hover { background: var(--pressed); color: var(--ink-bright); }
+  .btn:active { transform: translate(var(--shift), var(--shift)); box-shadow: none; background: var(--pressed); }
+  .btn.primary { border-color: var(--glow); box-shadow: var(--shift) var(--shift) 0 var(--copy-accent); }
+  .btn.primary:active { box-shadow: none; }
+
+  /* ---------- Layout ---------- */
+  main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "intro" "media" "steps" "manifest";
+    gap: 44px;
+  }
+  .intro { grid-area: intro; }
+  .media { grid-area: media; }
+  .steps { grid-area: steps; }
+  .manifest { grid-area: manifest; }
+  @media (min-width: 860px) {
+    main {
+      grid-template-columns: minmax(0, 1fr) 360px;
+      grid-template-rows: auto auto 1fr;
+      grid-template-areas: "intro media" "steps media" "manifest media";
+      column-gap: 64px;
+    }
+    .media { position: sticky; top: 24px; align-self: start; }
+  }
+
+  .eyebrow { margin: 0 0 18px; color: var(--glow-accent); font: 400 13px/1.5 var(--mono); }
+  .eyebrow::before { content: ""; display: inline-block; vertical-align: 0; margin-right: 10px; width: 18px; height: 8px; background: linear-gradient(90deg, var(--glow-accent) 0 10px, transparent 10px), var(--copy); background-size: auto, 10px 8px; background-position: 0 0, 6px 0; background-repeat: no-repeat; }
+  h1 {
+    margin: 0 0 18px;
+    color: var(--ink-bright);
+    font: 300 clamp(38px, 5.4vw, 58px)/1.04 var(--serif);
+    letter-spacing: -.012em;
+  }
+  h1 em { font-style: normal; font-weight: 500; color: var(--ink-bright); text-shadow: 2px 2px 0 color-mix(in srgb, var(--glow) 55%, transparent); }
+  .dek { margin: 0 0 30px; max-width: 34em; font-size: 19px; color: var(--ink); }
+
+  .lead { padding: 22px 24px 22px; margin-right: var(--shift); }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; padding: 0; list-style: none; }
+  .tags li { font: 400 12px/1 var(--mono); color: var(--ink-bright); padding: 6px 9px; border: 1px solid var(--hairline); }
+  .tags li:first-child { border-color: var(--glow-accent); }
+  .tags li:last-child { border-color: var(--glow); color: var(--glow); }
   .lead p { margin: 0; color: var(--ink); }
-  figure { margin: 30px 0 0; text-align: center; }
-  video {
-    display: block;
-    width: 100%;
-    max-width: 340px;
-    margin: 0 auto;
-    border-radius: 18px;
-    border: 1px solid var(--line);
-    background: #000;
+
+  h2 { margin: 0 0 6px; color: var(--ink-bright); font: 500 26px/1.2 var(--serif); }
+  .sub { margin: 0 0 20px; color: var(--ink); font: 400 13px/1.5 var(--mono); }
+
+  /* Timeline: grainRow left bars, active row is grainActive. */
+  .timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .step {
+    position: relative; width: calc(100% - 2px);
+    display: grid; grid-template-columns: 54px minmax(0, 1fr); column-gap: 14px;
+    padding: 14px 16px 14px 22px;
+    background: transparent; color: var(--ink);
+    border: var(--line) solid transparent; border-radius: 0;
+    font: inherit; text-align: left; cursor: pointer;
+    transition: background-color .15s ease;
   }
-  figcaption { margin-top: 14px; font-size: 15px; color: var(--faint); }
-  figcaption a { font-weight: 600; }
-  footer { margin-top: 56px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--faint); font-size: 14px; }
+  .step::before {
+    content: ""; position: absolute; left: -1.5px; top: -1.5px; bottom: -1.5px; width: 5px;
+    background: linear-gradient(90deg, var(--glow-accent) 0 3px, var(--glow) 3px 5px);
+  }
+  .step:hover { background: var(--surface); }
+  .step[aria-current="step"] {
+    background: var(--pressed);
+    border-color: var(--glow-accent);
+    box-shadow: 2px 2px 0 var(--copy);
+  }
+  .step time { font: 400 13px/1.9 var(--mono); color: var(--glow); }
+  .step b { display: block; color: var(--ink-bright); font: 500 19px/1.3 var(--serif); }
+  .step span { display: block; margin-top: 3px; font-size: 16px; line-height: 1.5; }
+
+  /* Manifest table */
+  .table-plate { padding: 4px 0 2px; margin-right: var(--shift); }
+  .table-plate .head { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 12px 18px 10px; border-bottom: 1px solid var(--hairline); color: var(--ink); font: 400 12px/1.4 var(--mono); }
+  .table-plate .head b { color: var(--glow-accent); font-weight: 400; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 11px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid color-mix(in srgb, var(--hairline) 55%, transparent); }
+  tr:last-child th, tr:last-child td { border-bottom: 0; }
+  th { font: 400 13px/1.5 var(--mono); color: var(--ink-bright); white-space: nowrap; }
+  th small { display: block; color: var(--glow); font-size: 13px; }
+  td { font-size: 16px; line-height: 1.45; color: var(--ink); }
+  .note { margin: 18px 0 0; font-size: 16px; }
+
+  /* Specimen plate with the recording */
+  .specimen { padding: 14px 14px 12px; margin-right: var(--shift); }
+  .specimen .bar { display: flex; justify-content: space-between; gap: 8px; margin: 0 0 12px; color: var(--ink); font: 400 12px/1.3 var(--mono); }
+  .specimen .bar b { color: var(--glow-accent); font-weight: 400; }
+  .screen { position: relative; background: #000; outline: 1px solid var(--hairline); outline-offset: 3px; margin: 4px; }
+  video {
+    display: block; width: 100%; height: auto; aspect-ratio: 720 / 1496;
+    background: #000; border-radius: 0;
+  }
+  @media (min-width: 860px) {
+    .screen { width: fit-content; margin: 4px auto; }
+    video { width: auto; height: min(560px, calc(100vh - 290px)); min-height: 380px; }
+  }
+  .now { display: flex; align-items: center; gap: 9px; margin: 14px 0 0; color: var(--ink-bright); font: 400 12px/1.3 var(--mono); }
+  .now::before { content: ""; width: 7px; height: 7px; background: var(--glow); box-shadow: 2px 2px 0 var(--copy-accent); flex: none; }
+  .actions { display: grid; gap: 14px; margin: 20px var(--shift) 0 0; }
+
+  footer.foot { margin-top: 64px; padding-top: 18px; border-top: 1px solid var(--hairline); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 20px; color: var(--ink); font: 400 12px/1.5 var(--mono); }
+
+  @media (max-width: 520px) {
+    .wrap { padding: 0 18px 48px; }
+    header { padding-top: 22px; }
+    .reg { margin-bottom: 32px; }
+    main { gap: 38px; }
+    .step { grid-template-columns: 1fr; padding-left: 20px; }
+    .step time { line-height: 1.4; margin-bottom: 2px; }
+    th, td { padding: 10px 14px; }
+    th { white-space: normal; overflow-wrap: anywhere; }
+    .table-plate tr { display: grid; }
+    .table-plate td { padding-top: 0; }
+    .table-plate th { border-bottom: 0; }
+    .screen { max-width: 290px; margin: 4px auto; }
+    .marks::before { inset: -12px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div class="brand">
-      <svg viewBox="0 0 175.01 151.56" aria-hidden="true"><path d="M85.70,0.00 L89.30,0.00 L92.50,81.00 L87.50,87.00 L82.50,81.00 Z M175.01,148.44 L173.21,151.56 L101.46,113.83 L98.76,106.50 L106.46,105.17 Z M1.80,151.56 L0.00,148.44 L68.55,105.17 L76.24,106.50 L73.55,113.83 Z M96.70,26.00 L96.70,94.69 L156.19,129.03 L157.99,125.91 L106.30,89.15 L100.30,26.00 Z M146.99,144.97 L87.50,110.62 L28.02,144.97 L29.82,148.09 L87.50,121.71 L145.19,148.09 Z M18.82,129.03 L78.30,94.69 L78.30,26.00 L74.70,26.00 L68.70,89.15 L17.02,125.91 Z"/></svg>
-      <span>Stellar Launcher</span>
-    </div>
+    <a class="brand" href="./" aria-label="Stellar Launcher — Privacy policy">
+      <span class="emblem" aria-hidden="true">
+        <svg class="peach" viewBox="0 0 175.01 151.56"><use href="#star"/></svg>
+        <svg class="teal" viewBox="0 0 175.01 151.56"><path id="star" d="M85.70,0.00 L89.30,0.00 L92.50,81.00 L87.50,87.00 L82.50,81.00 Z M175.01,148.44 L173.21,151.56 L101.46,113.83 L98.76,106.50 L106.46,105.17 Z M1.80,151.56 L0.00,148.44 L68.55,105.17 L76.24,106.50 L73.55,113.83 Z M96.70,26.00 L96.70,94.69 L156.19,129.03 L157.99,125.91 L106.30,89.15 L100.30,26.00 Z M146.99,144.97 L87.50,110.62 L28.02,144.97 L29.82,148.09 L87.50,121.71 L145.19,148.09 Z M18.82,129.03 L78.30,94.69 L78.30,26.00 L74.70,26.00 L68.70,89.15 L17.02,125.91 Z"/></svg>
+      </span>
+      <span><b>Stellar Launcher</b><small>Grain · two-ink riso</small></span>
+    </a>
     <nav aria-label="Site">
-      <a href="./">Privacy Policy</a>
+      <a href="./">Privacy policy</a>
+      <div class="switch" role="group" aria-label="Grain palette">
+        <button type="button" data-set="studio" aria-pressed="false"><i aria-hidden="true"></i>Studio</button>
+        <button type="button" data-set="riso" aria-pressed="true"><i aria-hidden="true"></i>Riso</button>
+        <button type="button" data-set="cinema" aria-pressed="false"><i aria-hidden="true"></i>Cinema</button>
+      </div>
     </nav>
   </header>
+  <div class="reg" aria-hidden="true"></div>
 
-  <section lang="en">
-    <h1>Accessibility Service Prominent Disclosure</h1>
-    <p class="meta">Stellar Launcher for Android (<code>app.stellar.launcher</code>) · Unedited screen recording</p>
+  <main>
+    <section class="intro" aria-labelledby="title">
+      <p class="eyebrow">app.stellar.launcher · Android AccessibilityService</p>
+      <h1 id="title">Accessibility service <em>prominent disclosure</em></h1>
+      <p class="dek">An unedited screen recording of what Stellar Launcher shows you before its optional double-tap screen lock can be switched on.</p>
 
-    <div class="lead">
-      <p><strong>The accessibility service is optional and off by default.</strong> It does one thing: lock the screen when you double-tap the empty home screen, with fingerprint unlock still working. It reads, collects and shares no personal or sensitive data.</p>
-    </div>
+      <div class="riso lead marks">
+        <ul class="tags" aria-label="Summary">
+          <li>Optional</li>
+          <li>Off by default</li>
+          <li>Zero data collected</li>
+        </ul>
+        <p><strong>The accessibility service does one thing:</strong> it locks the screen when you double-tap the empty home screen, so fingerprint unlock keeps working. It receives no accessibility events, cannot read window content, and reads, collects or shares no personal or sensitive data.</p>
+      </div>
+    </section>
 
-    <figure>
-      <video controls autoplay muted playsinline preload="metadata" src="accessibility-disclosure.mp4">
-        Your browser cannot play this video. <a href="accessibility-disclosure.mp4">Download the MP4</a>.
-      </video>
-      <figcaption><a href="accessibility-disclosure.mp4">Open raw MP4 video</a></figcaption>
-    </figure>
+    <aside class="media" aria-label="Screen recording">
+      <figure class="riso specimen marks" style="margin-top:0;margin-bottom:0;margin-left:0">
+        <figcaption class="bar"><b>Specimen 01</b><span>Screen recording · 0:32</span></figcaption>
+        <div class="screen">
+          <video id="demo" controls autoplay muted playsinline preload="metadata" src="accessibility-disclosure.mp4" width="720" height="1496">
+            Your browser cannot play this video. <a href="accessibility-disclosure.mp4">Download the MP4</a>.
+          </video>
+        </div>
+        <p class="now" id="now" aria-live="polite">0:01 · App launch</p>
+      </figure>
+      <div class="actions">
+        <a class="btn primary" href="accessibility-disclosure.mp4">Open raw MP4 video <span>720 × 1496</span></a>
+        <a class="btn" href="./">Read Privacy Policy <span>→</span></a>
+      </div>
+    </aside>
 
-    <h2>What the recording shows</h2>
-    <ul>
-      <li><strong>App launch &amp; navigation.</strong> Opening Stellar Launcher, then Settings → Behaviour → “Double tap locks screen”.</li>
-      <li><strong>In-app Prominent Disclosure</strong> (<code>LockAccessDialog</code>). Shown before any system settings open. It explains why an <code>AccessibilityService</code> is required — to call <code>GLOBAL_ACTION_LOCK_SCREEN</code> while keeping fingerprint unlock working — and how to enable <code>"Stellar: lock on double tap"</code>.</li>
-      <li><strong>Decline / Cancel.</strong> Tapping <code>Cancel</code> leaves the service disabled and returns to Stellar Settings; the row stays <code>Off</code>.</li>
-      <li><strong>Consent / Enable.</strong> Tapping “Double tap locks screen” → <code>Open settings</code> → turning on <code>"Stellar: lock on double tap"</code> in Android Accessibility settings → returning to Stellar (<code>On</code>) → double-tapping the empty home screen locks the screen.</li>
-      <li><strong>Data &amp; privacy guarantees.</strong> The service is declared with <code>accessibilityEventTypes=""</code>, <code>canRetrieveWindowContent="false"</code> and <code>isAccessibilityTool="false"</code>. It receives no accessibility events, cannot read any window content, and reads, collects or shares zero personal or sensitive user data.</li>
-    </ul>
+    <section class="steps" aria-labelledby="steps-title">
+      <h2 id="steps-title">What the recording shows</h2>
+      <p class="sub">Select a step to jump the video to that moment.</p>
+      <ol class="timeline">
+        <li><button class="step" type="button" data-t="1" data-label="App launch" aria-current="step"><time>0:01</time><div><b>App launch</b><span>Stellar Launcher opens, then Settings → Behaviour → “Double tap locks screen”.</span></div></button></li>
+        <li><button class="step" type="button" data-t="5" data-label="In-app disclosure"><time>0:05</time><div><b>In-app prominent disclosure</b><span><code>LockAccessDialog</code> appears before any system screen. It explains why an <code>AccessibilityService</code> is needed (to call <code>GLOBAL_ACTION_LOCK_SCREEN</code> while fingerprint unlock keeps working) and how to enable “Stellar: lock on double tap”.</span></div></button></li>
+        <li><button class="step" type="button" data-t="9" data-label="Decline / Cancel"><time>0:09</time><div><b>Decline / Cancel flow</b><span>Tapping <code>Cancel</code> leaves the service disabled and returns to Stellar Settings; the row stays <code>Off</code>.</span></div></button></li>
+        <li><button class="step" type="button" data-t="13" data-label="Consent &amp; system toggle"><time>0:13</time><div><b>Consent &amp; system toggle</b><span><code>Open settings</code> → turning on “Stellar: lock on double tap” in Android Accessibility settings → back in Stellar the row reads <code>On</code>.</span></div></button></li>
+        <li><button class="step" type="button" data-t="25" data-label="Double tap locks screen"><time>0:25</time><div><b>Double tap locks screen</b><span>Double-tapping the empty home screen locks the device. Nothing else is observed, stored or sent.</span></div></button></li>
+      </ol>
+    </section>
 
-    <p>You can turn the service off at any time in Android's Accessibility settings. Full details: <a href="./">Privacy Policy</a>.</p>
-  </section>
+    <section class="manifest" aria-labelledby="manifest-title">
+      <h2 id="manifest-title">Technical manifest</h2>
+      <p class="sub">How <code>LockService</code> is declared to Android.</p>
+      <div class="riso table-plate marks">
+        <div class="head"><b>res/xml/lock_service.xml</b><span>LockService</span></div>
+        <table>
+          <tbody>
+            <tr><th scope="row">accessibilityEventTypes<small>""</small></th><td>Receives no accessibility events at all.</td></tr>
+            <tr><th scope="row">canRetrieveWindowContent<small>false</small></th><td>Cannot read anything shown on screen.</td></tr>
+            <tr><th scope="row">isAccessibilityTool<small>false</small></th><td>Honestly declared as not an assistive tool.</td></tr>
+            <tr><th scope="row">performGlobalAction<small>GLOBAL_ACTION_LOCK_SCREEN</small></th><td>The only action it ever takes.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">You can turn the service off at any time in Android's Accessibility settings. Full details are in the <a href="./">Privacy Policy</a>.</p>
+    </section>
+  </main>
 
-  <footer>Stellar Launcher · app.stellar.launcher</footer>
+  <footer class="foot">
+    <span>Stellar Launcher · app.stellar.launcher</span>
+    <span>Printed in Grain · <span id="stop">Riso</span></span>
+  </footer>
 </div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var names = { studio: "Studio", riso: "Riso", cinema: "Cinema" };
+  var colors = { studio: "#0b0c10", riso: "#0c0c0d", cinema: "#0b0908" };
+  var switches = document.querySelectorAll(".switch button");
+  function setGrain(name) {
+    if (!names[name]) name = "riso";
+    root.setAttribute("data-grain", name);
+    switches.forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.set === name)); });
+    document.getElementById("stop").textContent = names[name];
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", colors[name]);
+    try { localStorage.setItem("stellar-grain", name); } catch (e) {}
+  }
+  switches.forEach(function (b) { b.addEventListener("click", function () { setGrain(b.dataset.set); }); });
+  try { var saved = localStorage.getItem("stellar-grain"); if (saved) setGrain(saved); } catch (e) {}
+
+  var video = document.getElementById("demo");
+  var now = document.getElementById("now");
+  var steps = Array.prototype.slice.call(document.querySelectorAll(".step"));
+  function fmt(t) { t = Math.floor(t); return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0"); }
+  function mark(step) {
+    if (step.getAttribute("aria-current") === "step") return;
+    steps.forEach(function (s) { if (s === step) s.setAttribute("aria-current", "step"); else s.removeAttribute("aria-current"); });
+    now.textContent = fmt(Number(step.dataset.t)) + " · " + step.dataset.label;
+  }
+  steps.forEach(function (s) {
+    s.addEventListener("click", function () {
+      try { video.currentTime = Number(s.dataset.t); } catch (e) {}
+      var p = video.play(); if (p && p.catch) p.catch(function () {});
+      mark(s);
+    });
+  });
+  video.addEventListener("timeupdate", function () {
+    var t = video.currentTime, current = steps[0];
+    steps.forEach(function (s) { if (t >= Number(s.dataset.t) - 0.25) current = s; });
+    mark(current);
+  });
+})();
+</script>
 </body>
 </html>
